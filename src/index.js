@@ -4,10 +4,14 @@ const initHandlebars = require('./config/handlebars');
 
 const app = express();
 
-initHandlebars(app);
+initHandlebars(app);  // or next row 
+// require('./config/handlebars')(app);
+
+app.use(express.static('./public'));  //Serves static files
+
 
 app.all('/', (req, res) => {
-    res.render('index', { layout: false});
+    res.render('index');
 });
 
 

@@ -1,14 +1,11 @@
-const handlebars = require('express-handlebars');
+const { engine } = require('express-handlebars');
 const path = require('path');
 
-console.log( handlebars)
 
 const initHandlebars = (app) => {
+    app.engine('hbs', engine());
+    app.set('view engine', 'hbs');
     app.set('views', path.resolve(__dirname, '../views'));
-    app.engine('hbs', handlebars({
-        extname: 'hbs'
-    }));
-    app.set('view engine', 'hbs')
 };
 
 module.exports = initHandlebars;
