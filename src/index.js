@@ -8,6 +8,9 @@ const routes = require('./routes');
 
 const app = express();
 
+app.use(express.urlencoded({ extended: true}));
+// parse the data from form data // extended: true - for complicated data
+
 initHandlebars(app);  // or next row 
 // require('./config/handlebars')(app);
 
