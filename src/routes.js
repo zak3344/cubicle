@@ -7,6 +7,8 @@ const router = express.Router();
 
 router.use(homeController);
 router.use('/cube', cubeController);  //Respond to /cube/create route
-router.use('*', (req, res) => res.render('404'));
+router.use('*', (req, res) => { 
+    res.render('404') 
+});
 
 module.exports = router;
