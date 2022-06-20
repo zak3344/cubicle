@@ -4,7 +4,6 @@ const cubeService = require('../services/cubeService');
 
 
 const renderHome = (req, res) => {
-
     let cubes = cubeService.getAll();
     res.render('index', { cubes });
 };
