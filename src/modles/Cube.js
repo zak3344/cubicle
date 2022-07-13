@@ -1,35 +1,35 @@
-const uniqid = require('uniqid');
+const mongoose = require('mongoose');
 
-class Cube {
-    static #cubes = [
-        {
-            id: 'asdfqwpoj12340fi-34twekorgl323kl',
-            name: 'Test1',
-            description: 'testtesttest',
-            imageUrl: 'https://www.wired.com/images_blogs/photos/uncategorized/2008/09/23/new_rubiks_cube_5.jpg',
-            difficulty: '5'
+const cubeSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true,
+        maxlength: 150,
+    },
+    imageUrl: {
+        type: String,
+        required: true,
+        // validate: /^https?:\/\/)/i
+        validate: {
+            validator: function (value) {
+                return /^https?:\/\//i.test(value);
+            },
+            message: 'Image URL is invalid!'
         }
-    ]
-
-    constructor(name, description, imageUrl, difficulty) {
-        this.id = uniqid();
-        this.name = name;
-        this.description = description;
-        this.imageUrl = imageUrl;
-        this.difficulty = difficulty;
-
-
-        // TODO: Add data check
+    },
+    difficultyLevel: {
+        type: Number,
+        required: true,
+        min: 1,
+        max: 6
     }
 
-    static get cubes() {
-        return Cube.#cubes.slice();
-    }
+});
 
-    static add(cube) {
-        Cube.#cubes.push(cube);
-    }
+const Cube = mongoose.model('Cube', cubeSchema);
 
-}
-
-module.exports = Cube;
+    module.exports = Cube;

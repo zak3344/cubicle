@@ -1,6 +1,7 @@
 const path = require('path');
 const express = require('express');
 const initHandlebars = require('./config/handlebars');
+const initDatabase = require('./config/database');
 
 const routes = require('./routes');
 const config = require('./config/config.json')[process.env.NODE_ENV];
@@ -21,7 +22,11 @@ app.use(express.static(path.resolve(__dirname, './public')));  //Serves static f
 app.use(routes);
 
 
+initDatabase(config.development.DB_CONNECTION_STRING)
+    .thrn(() => {
+        app.listen(config.PORT, console.log.bind(console, `App is running on port http://localhost:${config.PORT}`));
+    })
+    .catch(err => {
+        console.log(err);
+    });
 
-
-
-app.listen(config.PORT, console.log.bind(console, `App is running on port http://localhost:${config.PORT}`));
