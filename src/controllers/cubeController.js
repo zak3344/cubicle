@@ -21,7 +21,7 @@ const createCube = async (req, res) => {
 const cubeDetails = (req, res) => {
     let cube = cubeService.getOne(req.params.cubeId);
     
-    res.render('details',{ ...cube });
+    res.render('cube/details',{ ...cube });
 }
 
 router.get('/create', renderCreatePage);

@@ -91,7 +91,9 @@ p.name {
 }
 
 
-button, main a.btn {
+
+button, 
+a.btn {
     border: none;
     padding: 8px;
     text-align: center;

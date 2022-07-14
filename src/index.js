@@ -21,7 +21,7 @@ app.use(express.static(path.resolve(__dirname, './public')));  //Serves static f
 
 app.use(routes);
 
-console.log(config.DB_CONNECTION_STRING);
+
 initDatabase(config.DB_CONNECTION_STRING)
     .then(() => {
         app.listen(config.PORT, console.log.bind(console, `App is running on port http://localhost:${config.PORT}`));
