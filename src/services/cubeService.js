@@ -1,16 +1,11 @@
-const res = require('express/lib/response');
 const Cube = require('../modles/Cube');
 
+const getAll = async() => await Cube.find({}).lean();
 
-const cubeDb = [];
+const getOne = (id) => Cube.findOne(id);
 
-const getAll = () => Cube.cubes;
-
-const getOne = (id) => Cube.cubes.find(c => c.id == id);
-
-const create = (name, descriptionm, imageUrl, difficulty) => {
-    let cube = new Cube(name, descriptionm, imageUrl, difficulty);
-    Cube.add(cube);
+const create = (name, description, imageUrl, difficulty) => {
+    return Cube.create({ name, description, imageUrl, difficulty });
 };
 
 const search = (text, from, to) => {
@@ -20,21 +15,21 @@ const search = (text, from, to) => {
         result = result.filter(x => x.name.toLowerCase().includes(text.toLowerCase()));
     }
 
-    if(from) {
+    if (from) {
         result = result.filter(x => x.difficulty >= from);
     }
 
-    if(to) {
+    if (to) {
         result = result.filter(x => x.difficulty <= to);
     }
 
-    if( !text && !from && !to) {
+    if (!text && !from && !to) {
         result = '';
     }
 
-    return result;    
+    return result;
 }
- 
+
 
 
 const cubeService = {
