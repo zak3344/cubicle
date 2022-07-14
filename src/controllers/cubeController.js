@@ -14,12 +14,10 @@ const createCube = async (req, res) => {
     } catch (error) {
         res.status(400).send( error.message).end(0);
     }
-
-
 }
 
-const cubeDetails = (req, res) => {
-    let cube = cubeService.getOne(req.params.cubeId);
+const cubeDetails =async (req, res) => {
+    let cube = await cubeService.getOne(req.params.cubeId);
     
     res.render('cube/details',{ ...cube });
 }

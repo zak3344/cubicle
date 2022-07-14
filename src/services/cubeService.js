@@ -1,6 +1,5 @@
 const Cube = require('../modles/Cube');
 
-const getAll = async() => await Cube.find({}).lean();
 
 const getOne = (id) => Cube.findOne(id);
 

@@ -1,4 +1,4 @@
-const Accessory = require('../controllers/accessoryController');
+const Accessory = require('../models/Accessory');
 
 
 const create = (name, description, imageUrl) => {
