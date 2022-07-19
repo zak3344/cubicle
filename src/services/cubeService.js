@@ -1,7 +1,8 @@
-const Cube = require('../modles/Cube');
+const Cube = require('../models/Cube');
 
+const getAll = () =>  Cube.find({}).lean();
 
-const getOne = (id) => Cube.findOne(id);
+const getOne = (id) => Cube.findById(id).lean();
 
 const create = (name, description, imageUrl, difficulty) => {
     return Cube.create({ name, description, imageUrl, difficulty });
