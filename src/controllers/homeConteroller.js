@@ -11,11 +11,11 @@ const about = (req, res) => {
     res.render('about');
 }
 
-const search = (req, res) => {
+const search = async(req, res) => {
     let { search, from, to } = req.query;
     [from, to] = [Number(from), Number(to)];
 
-    let cubes = cubeService.search(search, from, to);
+    let cubes = await cubeService.search(search, from, to);
 
     if (cubes.length == 0) {
         res.redirect('/');

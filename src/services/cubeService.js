@@ -11,27 +11,27 @@ const create = (name, description, imageUrl, difficulty) => {
     return Cube.create({ name, description, imageUrl, difficulty });
 };
 
-// const search = (text, from, to) => {
-//     let result = Cube.cubes;
+const search = async (text, from, to) => {
+    let result = await getAll();
 
-//     if (text) {
-//         result = result.filter(x => x.name.toLowerCase().includes(text.toLowerCase()));
-//     }
+    if (text) {
+        result = result.filter(x => x.name.toLowerCase().includes(text.toLowerCase()));
+    }
 
-//     if (from) {
-//         result = result.filter(x => x.difficulty >= from);
-//     }
+    if (from) {
+        result = result.filter(x => x.difficulty >= from);
+    }
 
-//     if (to) {
-//         result = result.filter(x => x.difficulty <= to);
-//     }
+    if (to) {
+        result = result.filter(x => x.difficulty <= to);
+    }
 
-//     if (!text && !from && !to) {
-//         result = '';
-//     }
+    if (!text && !from && !to) {
+        result = '';
+    }
 
-//     return result;
-// }
+    return result;
+}
 
 const attachAccessory = async (cubeId, accessoryId) => {
     let cube = await Cube.findById(cubeId);
@@ -47,7 +47,8 @@ const cubeService = {
     getOne,
     getOneDetails,
     create,
-    attachAccessory
+    attachAccessory,
+    search
 }
 
 module.exports = cubeService;
