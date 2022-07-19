@@ -13,7 +13,17 @@ router.get('/add', async (req, res) => {
     } catch (error) {
         console.log(error);
     }
-
 });
+
+router.post('/add', async (req, res) => {
+    const cubeId = req.params.cubeId;
+
+    try {
+        await cubeService.attachAccessory(cubeId, req.body.accessory);
+        res.redirect(`/cube/${cubeId }`);
+    } catch (error) {
+        console.log(error);
+    }
+})
 
 module.exports = router;
