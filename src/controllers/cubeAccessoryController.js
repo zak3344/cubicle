@@ -6,7 +6,7 @@ const accessoryService = require('../services/accessoryService');
 router.get('/add', async (req, res) => {
     try {
         let cube = await cubeService.getOne(req.params.cubeId);
-        let accessories = await accessoryService.getAll();
+        let accessories = await accessoryService.getAllWithout();
 
         res.render('cube/accessory/add', { cube, accessories });
 

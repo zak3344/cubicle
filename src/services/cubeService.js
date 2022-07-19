@@ -5,6 +5,8 @@ const getAll = () => Cube.find({}).lean();
 
 const getOne = (id) => Cube.findById(id).lean();
 
+const getOneDetails = (id) => Cube.findById(id).populate('accessories').lean();
+
 const create = (name, description, imageUrl, difficulty) => {
     return Cube.create({ name, description, imageUrl, difficulty });
 };
@@ -43,6 +45,7 @@ const attachAccessory = async (cubeId, accessoryId) => {
 const cubeService = {
     getAll,
     getOne,
+    getOneDetails,
     create,
     attachAccessory
 }
