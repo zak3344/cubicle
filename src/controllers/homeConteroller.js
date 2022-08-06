@@ -3,7 +3,6 @@ const cubeService = require('../services/cubeService');
 
 const renderHome = async (req, res) => {
     let cubes = await cubeService.getAll();
-    console.log(cubes);
     res.render('index', { cubes });
 };
 
