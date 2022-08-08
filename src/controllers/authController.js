@@ -7,7 +7,7 @@ router.get('/login', (req, res) => {
 
 router.post('/login', (req, res) => {
     console.log(req.body);
-    
+
     res.redirect('/');
 });
 
@@ -15,10 +15,18 @@ router.get('/register', (req, res) => {
     res.render('auth/register');
 });
 
-router.post('/register', (req, res) => {
-    let {username, password, repeatPass } = req.body;
+router.post('/register', async (req, res) => {
+    try {
 
-    authService.register(username, password);
+        let { username, password, repeatPass } = req.body;
+
+        await authService.register(username, password);
+
+        res.redirect('/login');
+
+    } catch (error) {
+        res.status(400).send(error);
+    }
 });
 
 module.exports = router;
