@@ -12,6 +12,10 @@ const userSchema = new mongoose.Schema({
     }
 });
 
+userSchema.static('findUser', function(username) {
+    return this.findOne({username});       
+});
+
 // userSchema.pre('save', function (next) {
 //     bcrypt.hash(this.password, 9)
 //         .then(hash => {
