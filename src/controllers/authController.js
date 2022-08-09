@@ -18,8 +18,12 @@ router.post('/login', async (req, res) => {
             return res.redirect('/404');
         }
 
-        let token = await    authService.createToken(user);
-        console.log(token);
+        let token = await authService.createToken(user);
+
+        res.cookie('cubical_app_token', token, {
+            httpOnly: true
+        });
+
         res.redirect('/');
 
     } catch (err) {
