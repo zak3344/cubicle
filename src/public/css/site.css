@@ -91,7 +91,8 @@ p.name {
 }
 
 
-button, main a.btn {
+button, main a.btn,
+.btn {
     border: none;
     padding: 8px;
     text-align: center;
@@ -106,7 +107,7 @@ button, main a.btn {
 }
 
 .details a.btn{
-    width: 28%;
+    width: 19%;
 }
 
 button:hover {
