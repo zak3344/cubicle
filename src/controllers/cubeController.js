@@ -34,7 +34,7 @@ const renderDeletePage = async (req, res) => {
     res.render('cube/delete', cube);
 }
 
-const renderEditPage = (req, res) => {
+const renderEditPage = async (req, res) => {
     let cube = await cubeService.getOne(req.params.cubeId);
 
     res.render('cube/edit', cube);
@@ -46,8 +46,12 @@ const deleteCube = async (req, res) => {
     res.redirect('/');
 }
 
-const editCube = (req, res) => {
-    
+const editCube = async(req, res) => {
+    const { name, description, imageUrl, difficulty } = req.body;
+
+    await cubeService.updateOne(req.params.cubeId, { name, description, imageUrl, difficulty });
+
+    res.redirect(`/cube/${req.params.cubeId}`);
 }
 
 router.get('/create', isAuth, renderCreatePage);
