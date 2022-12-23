@@ -1,21 +1,29 @@
 const router = require('express').Router();
+
 const accessoryService = require('../services/accessoryService');
+const { errorParser } = require('../utils/errorParser');
+const { isAuth } = require('../middlewares/authMiddleware');
 
-router.get('/create', (req, res) => {
-    res.render('accessory/create');
-});
+// ADD ACCESSORY
+router.get('/create',
+    isAuth,
+    async (req, res) => {
+        res.render('createAccessory');
+    });
 
-router.post('/create', async (req, res) => { 
-    let {name, description, imageUrl} = req.body;
+router.post('/create',
+    isAuth,
+    async (req, res) => {
+        const { name, description, imageUrl } = req.body;
 
-    try{
-        console.log(imageUrl);
-        await accessoryService.create(name, description, imageUrl);
-        res.redirect('/');
-    } catch(error) {
-        res.status(400).send(error.messaga).end(0);
-    }
-    
-});
+        try {
+            await accessoryService.createAccessory({ name, description, imageUrl });
+            res.redirect('/');
+
+        } catch (error) {
+            res.locals.error = errorParser(error);
+            res.render('createAccessory');
+        }
+    });
 
 module.exports = router;

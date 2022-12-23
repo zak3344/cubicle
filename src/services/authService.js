@@ -1,40 +1,54 @@
-const bcrypt = require('bcrypt');
 const User = require('../models/User');
-const { jwtSign, JWT_SECRET } = require('../utils/jwtUtils');
+const { jwtSign } = require('../utils/jwt');
+const { JWT_SECRET } = require('../config/config')[process.env.NODE_ENV];
 
-function register(username, password) {
-    return bcrypt.hash(password, 10)
-        .then(hash => User.create({ username, password: hash }));
+// exports.register = async function (username, password, repeatPassword) {
+//     return bcrypt.hash(password, 10)
+//         .then(hash => User.create({username, password: hash}));
+// }
+
+exports.register = function (username, password, repeatPassword) {
+    if (password != repeatPassword) throw { message: 'Passwords doesn`t match!' }
+
+    User.getByUsername(username)
+        .then(user => {
+            if (!user) {
+                return User.create({ username, password });
+            } else {
+                throw { message: 'This username is already exist!' }
+            }
+
+        })
+        .catch((err) => {
+            throw err;
+        });
 }
 
-function login(username, password) {
-    return User.findUser(username)
-        .then(user => {
-            return Promise.all([bcrypt.compare(password, user.password), user]);
-        })
-        .then(([isValid, user]) => {
-            if (isValid) {
+exports.login = function (username, password) {
+    return User.getByUsername(username)
+        .then(user => Promise.all([user.validatePassword(password), user]))
+        .then(([isSame, user]) => {
+            if (isSame) {
                 return user;
             } else {
-                throw { message: 'Cannot find username' }
+                throw { message: 'Cannot find username or password!' }
             }
-        })
+        });
 }
 
-function createToken(user) {
+exports.createToken = function (user) {
 
     let payload = {
-        _id: user.get('_id'),
-        username: user.get('username')
-    };
+        _id: user._id,
+        username: user.username
+    }
 
-    return jwtSign(payload);
+    return jwtSign(payload, JWT_SECRET);
 }
 
 
 
-module.exports = {
-    register,
-    login,
-    createToken
-}
+
+
+
+

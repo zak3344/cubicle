@@ -1,31 +1,39 @@
 const jwt = require('jsonwebtoken');
-const { TOKEN_COOKIE_NAME, JWT_SECRET } = require('../constants');
+const { JWT_SECRET, TOKEN_COOKIE_NAME } = require('../config/config')[process.env.NODE_ENV];
+const { promisify } = require('util');
+const jwtVerify = promisify(jwt.verify);
 
 
-exports.auth = function (req, res, next) {
+exports.auth = async function (req, res, next) {
     let token = req.cookies[TOKEN_COOKIE_NAME];
 
-    if (!token) {
-        return next();
-    }
+    if (!token) return next();
 
-    // TODO: EXtract jwt.verify to jwt utils and make it promise function;
-
-    jwt.verify(token, JWT_SECRET, (err, decodedToken) => {
-        if (err) {
-            return res.status(401).redirect('/login');
-        }
-
-        req.user = decodedToken;
+    try {
+        const decoded = await jwtVerify(token, JWT_SECRET);
+        req.user = decoded;
+        res.locals.isLogged = decoded;
 
         next();
-    });
+
+    } catch (err) {
+        console.log(err);
+        next(err);
+    }
 }
 
 exports.isAuth = function (req, res, next) {
-    if(!req.user) {
-        return res.status(401).redirect('/login');
+    if (req.user) {
+        return next();
     }
-
-    next();
+    res.status(401).end();
 }
+
+
+exports.isGuest = function (req, res, next) {
+    if (!req.user) {
+        return next();
+    }
+    res.redirect('/');
+}
+

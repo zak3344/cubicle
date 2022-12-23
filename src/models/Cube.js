@@ -3,41 +3,47 @@ const mongoose = require('mongoose');
 const cubeSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: [true, 'Name is required!'],
+        minlength: [5, 'Name should be at least 5 characters long!'],
+        validate: [/^[a-zA-Z0-9\s]+$/i, 'Name should consist only english letters, spaces and numbers!']
     },
     description: {
         type: String,
-        required: true,
-        maxlength: 150,
+        required: [true, 'Description is required!'],
+        minlength: [20, 'Description should be at least 20 characters long!'],
     },
     imageUrl: {
         type: String,
-        required: true,
-        validate: [/^https?:\/\//i, 'Invalid Img URL']
-        // validate: {
-        //     validator: function (value) {
-        //         return /^https?:\/\//i.test(value);
-        //     },
-        //     message: 'Image URL is invalid!'
-        // }
+        required: [true, 'Image URL is required!'],
+        validate: {
+            validator: function (v) {
+                return /^https?:\/\//.test(v);
+            },
+            message: `Image URL should start with "http://" or "https://"!`
+        }
     },
     difficulty: {
         type: Number,
-        required: true,
-        min: 1,
-        max: 6
+        required: true
     },
     accessories: [
         {
-            type: mongoose.Types.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             ref: 'Accessory'
         }
-    ]
-
+    ],
+    creator: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }
 });
 
-cubeSchema.static.findByName = function(name) {
-    return this.find({name});
+cubeSchema.statics.getByName = function (name) {
+    return this.find({ name });
+};
+
+cubeSchema.query.filterBy = function () {
+
 }
 
 const Cube = mongoose.model('Cube', cubeSchema);

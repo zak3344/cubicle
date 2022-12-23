@@ -1,29 +1,25 @@
 const router = require('express').Router({ mergeParams: true });
-
 const cubeService = require('../services/cubeService');
 const accessoryService = require('../services/accessoryService');
 
+
+
 router.get('/add', async (req, res) => {
-    try {
-        let cube = await cubeService.getOneDetails(req.params.cubeId);
-        let accessories = await accessoryService.getAllWithout(cube.accessories);
+    let cube = await cubeService.getCubeById(req.params.id);
+    let accessories = await accessoryService.getAllWithout(
+        cube.accessories.map(x => x._id)
+    );
 
-        res.render('cube/accessory/add', { cube, accessories });
-
-    } catch (error) {
-        console.log(error);
-    }
+    res.render('attachAccessory', { cube, accessories });
 });
 
 router.post('/add', async (req, res) => {
-    const cubeId = req.params.cubeId;
+    const cubeId = req.params.id;
+    const accessoryId = req.body.accessory;
 
-    try {
-        await cubeService.attachAccessory(cubeId, req.body.accessory);
-        res.redirect(`/cube/${cubeId }`);
-    } catch (error) {
-        console.log(error);
-    }
-})
+    await cubeService.attachAccessory(cubeId, accessoryId);
+
+    res.redirect(`/cube/${cubeId}`);
+});
 
 module.exports = router;

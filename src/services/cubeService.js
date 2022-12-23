@@ -1,64 +1,51 @@
 const Accessory = require('../models/Accessory');
 const Cube = require('../models/Cube');
 
-const getAll = () => Cube.find({}).lean();
+const getCubes = () => Cube.find({}).lean();
 
-const getOne = (id) => Cube.findById(id).lean();
+const getCubeById = (id) => Cube.findById(id).populate('accessories').lean();
 
-const getOneDetails = (id) => Cube.findById(id).populate('accessories').lean();
-
-const create = (name, description, imageUrl, difficulty) => {
-    return Cube.create({ name, description, imageUrl, difficulty });
-};
-
-
-
-const deleteById = (id) => Cube.findByIdAndDelete(id);
-
-
-const search = async (text, from, to) => {
-    let result = await getAll();
-
-    if (text) {
-        result = result.filter(x => x.name.toLowerCase().includes(text.toLowerCase()));
-    }
-
-    if (from) {
-        result = result.filter(x => x.difficulty >= from);
-    }
-
-    if (to) {
-        result = result.filter(x => x.difficulty <= to);
-    }
-
-    if (!text && !from && !to) {
-        result = '';
-    }
-
-    return result;
+const createCube = (name, description, imageUrl, difficulty, userId) => {
+    return Cube.create({ name, description, imageUrl, difficulty, creator: userId });
 }
 
+const editCube = (id, data) => Cube.findByIdAndUpdate(id, data, { runValidators: true });
+
+const deleteCube = (id, data) => Cube.findByIdAndDelete(id)
+
 const attachAccessory = async (cubeId, accessoryId) => {
-    let cube = await Cube.findById(cubeId);
-    let accessory = await Accessory.findById(accessoryId);
+    const cube = await Cube.findById(cubeId);
+    const accessory = await Accessory.findById(accessoryId);
 
     cube.accessories.push(accessory);
 
-    return cube.save();
+    cube.save();
+} 
+
+const search = async (search, from, to) => {
+    let result = await getCubes();
+
+    if (search) {
+        result = result.filter(c => c.name.toLowerCase().includes(search.toLowerCase()));
+    }
+
+    if (from) {
+        result = result.filter(c => c.difficulty >= from);
+    }
+
+    if (to) {
+        result = result.filter(c => c.difficulty <= to);
+    }
+    
+    return result;
 }
 
-const updateOne = (id, data) => Cube.findByIdAndUpdate(id, data, {runValidators: true});
-
-
-const cubeService = {
-    getAll,
-    getOne,
-    getOneDetails,
-    create,
+module.exports = {
+    getCubes,
+    getCubeById,
+    createCube,
+    editCube,
+    deleteCube,
     attachAccessory,
-    search,
-    deleteById,
-    updateOne
+    search
 }
-
-module.exports = cubeService;

@@ -1,67 +1,97 @@
-const router = require('express').Router();
-const jwt = require('jsonwebtoken');
+const router = require('express').Router({ mergeParams: true });
+
 const cubeService = require('../services/cubeService');
 const cubeAccessoryController = require('../controllers/cubeAccessoryController');
-const { TOKEN_COOKIE_NAME, JWT_SECRET } = require('../constants');
 const { isAuth } = require('../middlewares/authMiddleware');
+const { isCreator } = require('../middlewares/cubeAuthMiddleware');
+const { errorParser } = require('../utils/errorParser');
 
-const renderCreatePage = (req, res) => {
-    res.render('cube/create');
-};
-
-const createCube = async (req, res) => {
-    let { name, description, imageUrl, difficulty } = req.body;
-
-    try {
-        await cubeService.create(name, description, imageUrl, difficulty);
-        res.redirect('/');
-    } catch (error) {
-        res.status(400).send(error.message).end(0);
+router.get('/create',
+    isAuth,
+    (req, res) => {
+        res.render('create');
     }
-}
+);
 
-const cubeDetails = async (req, res) => {
-    let cube = await cubeService.getOneDetails(req.params.cubeId);
+router.post('/create',
+    isAuth,
+    async (req, res) => {
+        const { name, description, imageURL, difficultyLevel } = req.body;
+        try {
 
-    res.render('cube/details', { ...cube });
-}
+            await cubeService.createCube(
+                name,
+                description,
+                imageURL,
+                Number(difficultyLevel),
+                req.user._id
+            );
+            res.redirect('/');
+        } catch (error) {
+            res.locals.error = errorParser(error);
+            res.render('create')
+        }
+    }
+);
 
+router.get('/:id',
+    async (req, res) => {
+        const cube = await cubeService.getCubeById(req.params.id);
 
-const renderDeletePage = async (req, res) => {
+        const isCreator = (cube.creator != undefined)
+            && (req.user?._id == cube.creator);
 
-    let cube = await cubeService.getOne(req.params.cubeId);
+        res.render('details', { cube, isCreator });
+    });
 
-    res.render('cube/delete', cube);
-}
+router.get('/:id/edit',
+    isAuth,
+    isCreator,
+    async (req, res) => {
+        try {
+            const cube = await cubeService.getCubeById(req.params.id);
+            res.render('edit', cube);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+);
 
-const renderEditPage = async (req, res) => {
-    let cube = await cubeService.getOne(req.params.cubeId);
+router.post('/:id/edit',
+    isAuth,
+    isCreator,
+    (req, res) => {
+        const id = req.params.id;
+        const { name, description, imageUrl, difficultyLevel } = req.body;
+        cubeService.editCube(id, { name, description, imageUrl, difficulty: difficultyLevel })
+            .then(() => res.redirect(`/cube/${id}`));
+    }
+);
 
-    res.render('cube/edit', cube);
-}
+router.get('/:id/delete',
+    isAuth,
+    isCreator,
+    async (req, res) => {
+        const cube = await cubeService.getCubeById(req.params.id);
+        res.render('delete', cube);
+    }
+);
 
-const deleteCube = async (req, res) => {
-    await cubeService.deleteById(req.params.cubeId);
+router.post('/:id/delete',
+    isAuth,
+    isCreator,
+    (req, res) => {
+        cubeService.deleteCube(req.params.id)
+            .then(() => {
+                res.redirect('/')
+            });
+    }
+);
 
-    res.redirect('/');
-}
-
-const editCube = async(req, res) => {
-    const { name, description, imageUrl, difficulty } = req.body;
-
-    await cubeService.updateOne(req.params.cubeId, { name, description, imageUrl, difficulty });
-
-    res.redirect(`/cube/${req.params.cubeId}`);
-}
-
-router.get('/create', isAuth, renderCreatePage);
-router.post('/create', isAuth, createCube);
-router.get('/:cubeId', cubeDetails);
-router.get('/:cubeId/delete', isAuth, renderDeletePage);
-router.post('/:cubeId/delete', isAuth, deleteCube);
-router.get('/:cubeId/edit', isAuth, renderEditPage);
-router.post('/:cubeId/edit', isAuth, editCube);
-
-router.use('/:cubeId/accessory', cubeAccessoryController);
+// sub router handle accessory requests
+router.use('/:id/accessory',
+    isAuth,
+    cubeAccessoryController
+);
 
 module.exports = router;
