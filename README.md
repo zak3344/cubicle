@@ -1,2 +1,2 @@
 # cubicle
-Node.js demo projet
+Multi Page Application (MPA) created with Express and Mongoose
