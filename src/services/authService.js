@@ -1,5 +1,5 @@
 const User = require('../models/User');
-const { jwtSign } = require('../utils/jwt');
+const { jwtSign } = require('../utils/jwtUtils');
 const { JWT_SECRET } = require('../config/config')[process.env.NODE_ENV];
 
 // exports.register = async function (username, password, repeatPassword) {
