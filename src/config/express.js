@@ -15,7 +15,7 @@ module.exports = (app) => {
     // Setup the view engine
     app.engine('hbs', engine({ extname: 'hbs' }));
     app.set('view engine', 'hbs');
-    app.set('views', './src/views');
+    app.set('views', path.resolve(__dirname, '../views'));
 
     // Setup the body parser
     app.use(express.urlencoded({ extended: true }));
