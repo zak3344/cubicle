@@ -6,7 +6,7 @@
     "main": "pathToMain",
     "scripts": {
         "start": "SET NODE_ENV=development&&nodemon src/index.js",
-        "prod": "SET NODE_ENV=production&&nodemon src/index.js"
+        "prod": "node src/index.js"
     },
     "type": "commonjs",
     "dependencies": {
