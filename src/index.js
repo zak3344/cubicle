@@ -13,7 +13,7 @@ dbConnect(config.DB_CONNECTION_STRING)
     .then(() => {
         app.listen(
             config.PORT,
-            console.log(`Listening on http://localhost:${config.port}`)
+            console.log(`Listening on http://localhost:${config.PORT}`)
         );
     })
     .catch((error) => {

@@ -1,6 +1,6 @@
 module.exports = {
     development: {
-        PORT: process.env.PORT || 3000,
+        PORT: process.env.PORT || 3000, 
         DB_CONNECTION_STRING: 'mongodb://localhost:27017/cubes',
         JWT_SECRET: '$2y$10$xzlJAyCJAfoaBZIez.I0EO3KZAuXr66Voh/YmIQrGnjKUN3/WOJSq',
         TOKEN_COOKIE_NAME: 'cubicale_token'
@@ -12,6 +12,3 @@ module.exports = {
         TOKEN_COOKIE_NAME: process.env.TOKEN_COOKIE_NAME
     }
 };
-// '$2y$10$xzlJAyCJAfoaBZIez.I0EO3KZAuXr66Voh/YmIQrGnjHJK3/WOJSq'
-
-// 'cubicale_token'
