@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-        validate: [/^[a-zA-Z0-9]+$/i, 'Username shold consist only english letters and numbers!'],
+        validate: [/^[a-zA-Z0-9]+$/i, 'Password shold consist only english letters and numbers!'],
         minlength: [6, 'Password should be at least 6 characters long!']
     }
 });

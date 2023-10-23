@@ -9,11 +9,10 @@ require('./config/express')(app);
 
 app.use(router);
 
-
 dbConnect(config.DB_CONNECTION_STRING)
     .then(() => {
         app.listen(
-            config.port,
+            config.PORT,
             console.log(`Listening on http://localhost:${config.port}`)
         );
     })
